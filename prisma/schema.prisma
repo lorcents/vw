@@ -1,0 +1,89 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Wallet {
+  id          Int      @id @default(autoincrement())
+  UserId      String   @unique
+  currency    Currency @relation(fields: [countryCode], references: [countryCode])
+  countryCode String
+  balance     Int
+  password    String?
+
+  pendingTransaction pendingTransaction[]
+  Transaction        Transaction[]
+  externalWallet     externalWallet?
+}
+
+model externalWallet {
+  id            Int    @id @default(autoincrement())
+  name          String
+  bankName      String
+  bankCode      Int
+  countryCode   String
+  accountNumber Int
+  Wallet        Wallet @relation(fields: [walletId], references: [id])
+  walletId      Int    @unique
+}
+
+model Currency {
+  id             Int      @id @default(autoincrement())
+  Wallet         Wallet[]
+  currencyName   String   @db.VarChar(255)
+  currencySymbol String   @db.VarChar(10)
+  currencyCode   String   @unique
+  countryCode    String   @unique
+  usdEquivalent  Int
+}
+
+model pendingTransaction {
+  id              Int      @id @default(autoincrement())
+  transactionType String   @db.VarChar(10)
+  amount          Int
+  fee             Int
+  comment         String   @db.VarChar(255)
+  appId           String
+  accNumber       String
+  con             DateTime @default(now())
+  status          String   @db.VarChar(50)
+
+  wallet   Wallet @relation(fields: [walletId], references: [id])
+  walletId Int
+}
+
+model Logs {
+  id Int @id @default(autoincrement())
+
+  transactionId  Int
+  transactionObj Json
+  status         String @db.VarChar(50)
+}
+
+model Transaction {
+  transactionId   Int    @unique
+  transactionType String @db.VarChar(10)
+
+  wallet    Wallet   @relation(fields: [walletId], references: [id])
+  walletId  Int
+  amount    Int
+  cost      Int
+  comment   String   @db.VarChar(255)
+  balance   Int
+  accNumber String
+  con       DateTime
+  valueTime DateTime @default(now())
+}
+
+model fee {
+  id     Int    @id @default(autoincrement())
+  title  String
+  amount Int
+}
