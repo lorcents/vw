@@ -10,50 +10,82 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Wallet {
-  id          Int      @id @default(autoincrement())
-  UserId      String   @unique
-  currency    Currency @relation(fields: [countryCode], references: [countryCode])
-  countryCode String
-  balance     Int
-  password    String?
-
-  pendingTransaction pendingTransaction[]
-  Transaction        Transaction[]
-  externalWallet     externalWallet?
+enum TransactiontType {
+  credit
+  debit
 }
 
-model externalWallet {
-  id            Int    @id @default(autoincrement())
-  name          String
-  bankName      String
-  bankCode      Int
-  countryCode   String
-  accountNumber Int
-  Wallet        Wallet @relation(fields: [walletId], references: [id])
-  walletId      Int    @unique
+enum Service {
+  mps //Mpesa
+  jen //jenga
+}
+
+enum ServiceId {
+  express
+  rtgs //send money to local kenya bank account using rtgs
+  swift //send money to global accounts using swift
+  kyc //know your customer
+  equity // Send money with  equity bank
+  placc //send money to another bank account using pesa link bank
+  plmb //send money pesalink to mobile wallet
+  mbwt //send money jenga mobile wallet across East africa 
 }
 
 model Currency {
-  id             Int      @id @default(autoincrement())
+  id             Int        @unique      @id @default(autoincrement())
   Wallet         Wallet[]
-  currencyName   String   @db.VarChar(255)
-  currencySymbol String   @db.VarChar(10)
-  currencyCode   String   @unique
-  countryCode    String   @unique
-  usdEquivalent  Int
+  externalWallet ExternalWallet[]
+
+  currencyName    String @db.VarChar(255)
+  currencyCode    String
+  countryCode     String @unique @db.Char(2)
+  countryName     String
+  countryDialCode String
 }
 
-model pendingTransaction {
-  id              Int      @id @default(autoincrement())
-  transactionType String   @db.VarChar(10)
+model Wallet {
+  id         Int      @id @default(autoincrement())
+  userId     String   @unique
+  currency   Currency @relation(fields: [currencyId], references: [id])
+  currencyId Int      
+  balance    Int
+  pin        String?  @db.Char(4)
+  createdOn  DateTime @default(now())
+  updatedOn  DateTime @default(now())
+
+  pendingTransaction PendingTransaction[]
+  Transaction        Transaction[]
+  externalWallet     ExternalWallet?
+}
+
+model ExternalWallet {
+  id        Int       @id @default(autoincrement())
+  name      String
+  serviceId ServiceId
+  bankName  String?
+  bankCode  String?   @db.Char(2)
+
+  accountNumber String? //Bank account 
+  phoneNumber   String?
+  createdOn     DateTime @default(now())
+  updatedOn     DateTime @default(now())
+  currency      Currency @relation(fields: [currencyId], references: [id])
+  currencyId    Int      @unique
+  Wallet        Wallet   @relation(fields: [walletId], references: [id])
+  walletId      Int      @unique
+}
+
+model PendingTransaction {
+  id              Int              @id @default(autoincrement())
+  transactionType TransactiontType
   amount          Int
   fee             Int
-  comment         String   @db.VarChar(255)
+  comment         String           @db.VarChar(255)
   appId           String
   accNumber       String
-  con             DateTime @default(now())
-  status          String   @db.VarChar(50)
+  service         Service
+  con             DateTime         @default(now())
+  status          String           @db.VarChar(50)
 
   wallet   Wallet @relation(fields: [walletId], references: [id])
   walletId Int
@@ -68,8 +100,8 @@ model Logs {
 }
 
 model Transaction {
-  transactionId   Int    @unique
-  transactionType String @db.VarChar(10)
+  transactionId   Int              @unique
+  transactionType TransactiontType
 
   wallet    Wallet   @relation(fields: [walletId], references: [id])
   walletId  Int
@@ -78,12 +110,20 @@ model Transaction {
   comment   String   @db.VarChar(255)
   balance   Int
   accNumber String
+  service   Service
   con       DateTime
   valueTime DateTime @default(now())
 }
 
-model fee {
-  id     Int    @id @default(autoincrement())
-  title  String
-  amount Int
+model Fee {
+  id        Int       @id @default(autoincrement())
+  serviceId ServiceId
+  p3Fee     Json
+}
+
+model KenyaBanks {
+  id          Int    @id @default(autoincrement())
+  bankName    String
+  bankCode    String @unique
+  countryCode String
 }

@@ -5,7 +5,11 @@
   "main": "index.js",
   "scripts": {
     "dev": "ts-node-dev --files src/index.ts  ",
-    "nodemon": "nodemon src/index.ts"
+    "nodemon": "nodemon src/index.ts",
+    "seed": "ts-node prisma/seed.ts"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   },
   "author": "",
   "license": "ISC",

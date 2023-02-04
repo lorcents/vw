@@ -15,23 +15,21 @@ export abstract class JengaServices {
   /**
    * @param  {type.jenTransactionBody} data
    */
-  static async initiatedTransaction(
-    data: type.jenTransactionBody
-  ): Promise<any> {
+  static async initiatedTransaction(data: type.TransactionBody): Promise<any> {
     let err, pendingTransaction;
 
-    const fee = pesaLinkCharges(data.amount);
+    const fee = pesaLinkCharges(data.serviceBody.amount);
 
     // creates the initiated transaction
     [err, pendingTransaction] = await to(
       prisma.pendingTransaction.create({
         data: {
           transactionType: "debit",
-          amount: data.amount,
+          amount: data.serviceBody.amount,
           fee: fee,
           comment: data.comment,
-          appId: data.appId,
-          accNumber: data.accountNumber,
+          appId: "12345",
+          accNumber: data.serviceBody.accNo,
           status: "pending",
 
           wallet: { connect: { id: data.walletId } },
@@ -47,26 +45,19 @@ export abstract class JengaServices {
   }
 
   static async jengaRequest(
-    data: type.pendingTransaction,
-    phoneNumber: string
+    data: type.TransactionBody,
+    pendingTransaction: type.pendingTransaction
   ): Promise<any> {
     let err, jenRequest;
     const balance = await checkBalance(data.walletId);
 
-    if (data.amount > balance) {
+    if (pendingTransaction.amount + pendingTransaction.fee > balance) {
       return "Insuffucient Balance";
     }
     /*
      send request to jenga end point
      */
-    [err, jenRequest] = await to(
-      axios.post(jen_url, {
-        phoneNumber: phoneNumber,
-        amount: data.amount - data.fee,
-        accountNumber: data.accNumber,
-        description: data.comment,
-      })
-    );
+    [err, jenRequest] = await to(axios.post(jen_url, data));
     if (err || jenRequest === undefined) {
       return "Failed to send jengaRequest";
     }

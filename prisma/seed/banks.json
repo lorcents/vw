@@ -1,0 +1,227 @@
+[
+  {
+    "bankName": "African Banking Corp. Bank Ltd",
+    "bankCode": "35",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Bank of Africa Kenya Limited",
+    "bankCode": "19",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Bank of Baroda (Kenya Limited)",
+    "bankCode": "06",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Bank of India",
+    "bankCode": "05",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Barclays Bank of Kenya Limited",
+    "bankCode": "03",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Central Bank of Kenya",
+    "bankCode": "09",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Chase Bank Limited",
+    "bankCode": "30",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Citibank N A",
+    "bankCode": "16",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Co-operative Bank of Kenya Limited",
+    "bankCode": "11",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Commercial Bank of Africa Limited",
+    "bankCode": "07",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Consolidated Bank of Kenya Limited",
+    "bankCode": "23",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Credit Bank Limited",
+    "bankCode": "25",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Development Bank of Kenya Limited",
+    "bankCode": "59",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Diamond Trust Bank Limited",
+    "bankCode": "63",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "ECO Bank Limited",
+    "bankCode": "43",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Equity Bank Limited",
+    "bankCode": "68",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Family Bank Ltd",
+    "bankCode": "70",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Faulu Microfinance Bank Ltd",
+    "bankCode": "79",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Fidelity Commercial Bank Limited",
+    "bankCode": "60",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "First Community Bank",
+    "bankCode": "74",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Giro Commercial Bank Limited",
+    "bankCode": "42",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Guaranty Trust Bank ( Kenya) Ltd.",
+    "bankCode": "53",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Guardian Bank Limited",
+    "bankCode": "55",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Gulf African Bank Ltd",
+    "bankCode": "72",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Habib Bank A G Zurich",
+    "bankCode": "17",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Habib Bank Limited",
+    "bankCode": "08",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Housing Finance Bank",
+    "bankCode": "61",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "I&M Bank Limited",
+    "bankCode": "57",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Imperial Bank Limited",
+    "bankCode": "39",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Jamii Bora Bank",
+    "bankCode": "51",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Kenya WOMEN MICROFINANCE BANK LT",
+    "bankCode": "78",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Kenya Commercial Bank Limited",
+    "bankCode": "01",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "M-Oriental Bank Limited",
+    "bankCode": "14",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Middle East Bank Kenya Limited",
+    "bankCode": "18",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "NIC Bank Limited",
+    "bankCode": "41",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "National Bank of Kenya Limited",
+    "bankCode": "12",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Paramount Universal Bank Limited",
+    "bankCode": "50",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Prime Bank Limited",
+    "bankCode": "10",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Sidian Bank Limited",
+    "bankCode": "66",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Spire Bank Ltd",
+    "bankCode": "49",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Stanbic Bank Kenya Limited",
+    "bankCode": "31",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Standard Chartered Bank Kenya Limited",
+    "bankCode": "02",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Trans-National Bank Limited",
+    "bankCode": "26",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "UBA Kenya Bank Ltd",
+    "bankCode": "76",
+    "countryCode": "KE"
+  },
+  {
+    "bankName": "Victoria Commercial Bank Limited",
+    "bankCode": "54",
+    "countryCode": "KE"
+  }
+]

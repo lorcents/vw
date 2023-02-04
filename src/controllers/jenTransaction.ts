@@ -21,7 +21,7 @@ const prisma = new PrismaClient();
 export const jengaTransaction = {
   initiateTransation: async (req: express.Request, res: express.Response) => {
     //
-    const data: type.jenTransactionBody = req.body;
+    const data: type.TransactionBody = req.body;
 
     const pendingTransaction = await JengaServices.initiatedTransaction(data);
 
@@ -40,8 +40,8 @@ export const jengaTransaction = {
      */
 
     const jenRequest = await JengaServices.jengaRequest(
-      pendingTransaction,
-      data.phoneNumber
+      data,
+      pendingTransaction
     );
 
     let status: string;
