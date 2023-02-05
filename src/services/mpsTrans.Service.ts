@@ -18,6 +18,7 @@ export abstract class MpsService {
           amount: data.serviceBody.amount,
           fee: data.serviceBody.fee,
           comment: data.comment,
+          service:data.service,
           accNumber: data.serviceBody.phoneNo,
           appId: "12345",
           status: "pending",

@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime";
 import * as type from "../interface";
+import { SYSTEMWALLETID } from "./const";
 
 const prisma = new PrismaClient();
 
@@ -32,14 +33,14 @@ export const updateBalance = async (
   pendingTransaction: type.pendingTransaction
 ): Promise<updatedBal> => {
   const balance = await checkBalance(pendingTransaction.walletId);
-  const feeBalance = await checkBalance(1);
+  const feeBalance = await checkBalance(SYSTEMWALLETID);
 
   //Balances
   let currBal: number;
   if (pendingTransaction.transactionType === "credit") {
     currBal = balance + pendingTransaction.amount;
   } else if (pendingTransaction.transactionType === "debit") {
-    currBal = balance - pendingTransaction.amount;
+    currBal = balance - (pendingTransaction.amount + pendingTransaction.fee);
   }
 
   // const updatedBalance = balance - amount;

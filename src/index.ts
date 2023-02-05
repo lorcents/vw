@@ -18,7 +18,7 @@ app.use("/", currencyRouter);
 app.use("/", walletRouter);
 app.use("/", transactionRouter);
 
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 4500;
 
 const server = app.listen(port, () => {
   console.log(`🚀 Server ready at: http://localhost:${port}`);

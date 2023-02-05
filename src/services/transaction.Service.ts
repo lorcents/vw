@@ -8,6 +8,7 @@ import {
   createTransaction,
   updateWalletBal,
 } from "../util/transaction";
+import { SYSTEMWALLETID } from "../util/const";
 
 const prisma = new PrismaClient();
 
@@ -54,13 +55,16 @@ export abstract class TransactionService {
       pendingTransaction.walletId,
       updatedBalance
     );
-    const updateFeebalWallet = await updateWalletBal(1, updatedFeeBalance);
+    const updateFeebalWallet = await updateWalletBal(
+      SYSTEMWALLETID,
+      updatedFeeBalance
+    );
     if (
       typeof walletBalanceupdate === "string" ||
       typeof updateFeebalWallet === "string"
     ) {
       release();
-      return "Error not updating balances";
+      return "Error  updating balances";
     }
 
     //const Delete Transaction

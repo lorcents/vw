@@ -81,7 +81,7 @@ model PendingTransaction {
   amount          Int
   fee             Int
   comment         String           @db.VarChar(255)
-  appId           String
+  appId           String  //We dont need this ,do we?
   accNumber       String
   service         Service
   con             DateTime         @default(now())

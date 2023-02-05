@@ -47,16 +47,16 @@ export interface jenTransactionBody {
 }
 
 export interface wallet {
-  UserId: string;
+  userId: string;
   countryCode: string;
 }
 
 export interface externalWallet {
   fullName: string;
   bankName: string;
-  bankcode: number;
+  bankcode: string;
   countryCode: string;
-  accountNumber: number;
+  accountNumber: string;
   walletId: number;
 }
 
@@ -85,7 +85,7 @@ export interface statusUpdate {
 
 export interface pendingTransaction {
   id: number;
-  transactionType: string;
+  transactionType: TransactionType;
   amount: number;
   fee: number;
   comment: string;
@@ -94,11 +94,12 @@ export interface pendingTransaction {
   accNumber: string;
   status: string;
   walletId: number;
+  service: Service;
 }
 
 export interface Transaction {
   transactionId: number;
-  transactionType: string;
+  transactionType: TransactionType;
 
   walletId: number;
   amount: number;
@@ -108,4 +109,5 @@ export interface Transaction {
   accNumber: string;
   con: Date;
   valueTime: Date;
+  service: Service;
 }

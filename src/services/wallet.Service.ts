@@ -1,10 +1,12 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import * as type from "../interface";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
 export abstract class WalletServices {
+  protected static incorrectAttempts = 0;
   /**
    * @param  {type.wallet} data
    */
@@ -12,7 +14,7 @@ export abstract class WalletServices {
     try {
       const result = await prisma.wallet.create({
         data: {
-          UserId: data.UserId,
+          userId: data.userId,
           currency: { connect: { countryCode: data.countryCode } },
           balance: 0,
         },
@@ -25,15 +27,21 @@ export abstract class WalletServices {
   /**
    * @param  {number} id
    */
-  static async fetchWallet(UserId: string): Promise<any> {
+  static async fetchWallet(userId: string): Promise<any> {
     try {
       const result = await prisma.wallet.findUnique({
-        where: { UserId },
+        where: { userId: userId },
         select: {
           id: true,
-          UserId: true,
+          userId: true,
           balance: true,
-          countryCode: true,
+          currency: {
+            select: {
+              countryName: true,
+              currencyCode: true,
+              countryCode: true,
+            },
+          },
         },
       });
       return result;
@@ -44,15 +52,25 @@ export abstract class WalletServices {
   /**
    * @param  {type.externalWallet} data
    */
-  static async createExternalWallet(data: type.externalWallet): Promise<any> {
+  static async createExternalWallet(data: type.TransactionBody): Promise<any> {
     try {
+      const currency = await prisma.currency.findUnique({
+        where: { countryCode: data.serviceBody.countryCode },
+      });
+
+      if (!currency) {
+        throw new Error(
+          `Currency with country code ${data.serviceBody.countryCode} not found`
+        );
+      }
       const result = await prisma.externalWallet.create({
         data: {
-          name: data.fullName,
-          bankName: data.bankName,
-          bankCode: data.bankcode,
-          accountNumber: data.accountNumber,
-          countryCode: data.countryCode,
+          name: data.serviceBody.name,
+          bankName: data.serviceBody.bankName,
+          bankCode: data.serviceBody.bankCode,
+          accountNumber: data.serviceBody.accNo,
+          serviceId: data.serviceId,
+          currency: { connect: { id: currency.id } },
           Wallet: { connect: { id: data.walletId } },
         },
       });
@@ -66,68 +84,95 @@ export abstract class WalletServices {
   /**
    * @param  {type.currency} data
    */
-  static async createCurrency(data: type.currency): Promise<any> {
-    try {
-      const result = await prisma.currency.create({
-        data: {
-          currencyName: data.currencyName,
-          currencySymbol: data.currencySymbol,
-          usdEquivalent: data.usdEquivalent,
-          currencyCode: data.currencyCode,
-          countryCode: data.countryCode,
-        },
-      });
-      return result;
-    } catch (err) {
-      console.log(err);
-      return "Error creating currency";
-    }
-  }
 
-  static async fetchCurrency(id: number): Promise<any> {
+  static async fetchCurrency(countryCode: string): Promise<any> {
     try {
       const result = await prisma.currency.findUnique({
         where: {
-          id: id,
+          countryCode: countryCode,
         },
       });
 
       return result;
     } catch (err) {
-      return `No currency found with id ${id}`;
+      return `No currency found with country code ${countryCode}`;
     }
   }
-  static async createPassword(UserId: string, password: string): Promise<any> {
-    const hash = await bcrypt.hash(password, 10);
+  static async createPin(userId: string, pin: string): Promise<any> {
+    const hash = await bcrypt.hash(pin, 10);
     try {
       const result = await prisma.wallet.update({
         where: {
-          UserId,
+          userId: userId,
         },
         data: {
-          password: hash,
+          pin: hash,
         },
       });
       return result;
     } catch (err) {
-      return "Error creating password";
+      return "Error creating pin";
     }
   }
-  static async checkPassword(UserId: string): Promise<any> {
+  static async checkPin(userId: string): Promise<any> {
     try {
       const result = await prisma.wallet.findUnique({
-        where: { UserId },
+        where: { userId },
         select: {
-          password: true,
+          pin: true,
         },
       });
-      if (result?.password) {
-        return 1;
+      if (result?.pin) {
+        return 1; //There is a pin associated with the wallet
       } else {
-        return 0;
+        return 0; // //There  is NO  a pin associated with the wallet
       }
     } catch (err: any) {
       return err.message;
     }
+  }
+
+  // define a counter to keep track of the incorrect attempts
+  // let incorrectAttempts = 0;
+
+  static async comparePin(userId: string, pin: string) {
+    const hashedPin = await prisma.wallet.findUnique({
+      where: { userId },
+      select: {
+        pin: true,
+      },
+    });
+
+    if (!hashedPin?.pin) {
+      return {
+        error: "Your wallet pin could not be found.",
+      };
+    }
+
+    const isPinCorrect = await bcrypt.compare(pin, hashedPin.pin);
+
+    if (!isPinCorrect) {
+      // increment the counter if pin is incorrect
+      this.incorrectAttempts += 1;
+
+      // check if the number of incorrect attempts is equal to 3
+      if (this.incorrectAttempts === 3) {
+        // return error message indicating that the account is blocked
+        return {
+          error:
+            "Your account has been blocked due to multiple incorrect attempts. Please conduct .",
+        };
+      }
+
+      // return error message indicating that the pin is incorrect
+      return { error: "Incorrect pin. Please try again." };
+    }
+
+    // reset the incorrectAttempts counter if pin is correct
+    this.incorrectAttempts = 0;
+
+    // return a JSON web token if pin is correct
+    // const token = jwt.sign({}, process.env.JWT_SECRET, { expiresIn: "1h" });
+    return { isPinCorrect };
   }
 }

@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { PendingTransaction, Prisma, PrismaClient } from "@prisma/client";
 import express from "express";
 
 import { parse, stringify, toJSON, fromJSON } from "flatted";
@@ -23,7 +23,8 @@ export const jengaTransaction = {
     //
     const data: type.TransactionBody = req.body;
 
-    const pendingTransaction = await JengaServices.initiatedTransaction(data);
+    const pendingTransaction: PendingTransaction =
+      await JengaServices.initiatedTransaction(data);
 
     // Create initial log
 

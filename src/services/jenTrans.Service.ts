@@ -29,6 +29,7 @@ export abstract class JengaServices {
           fee: fee,
           comment: data.comment,
           appId: "12345",
+          service:data.service,
           accNumber: data.serviceBody.accNo,
           status: "pending",
 

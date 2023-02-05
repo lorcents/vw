@@ -18,30 +18,27 @@ export const wallet = {
 
   createPin: async (req: express.Request, res: express.Response) => {
     const data: { UserId: string; pin: string } = req.body;
-    const result = await WalletServices.createPassword(
-      data.UserId,
-      data.pin
-    );
+    const result = await WalletServices.createPin(data.UserId, data.pin);
     res.json(result);
   },
 
   checkPin: async (req: express.Request, res: express.Response) => {
-    const data:{UserId: string}=req.body;
-    const result =await WalletServices.checkPassword(data.UserId)
+    const data: { userId: string } = req.body;
+    const result = await WalletServices.checkPin(data.userId);
 
-    res.json(result)
+    res.json(result);
   },
 
   getWallet: async (req: express.Request, res: express.Response) => {
-    const UserId: string = req.body.UserId;
+    const userId: string = req.body.userId;
 
-    const wallet = await WalletServices.fetchWallet(UserId);
+    const wallet = await WalletServices.fetchWallet(userId);
 
     res.json(wallet);
   },
 
   createExternalWallet: async (req: express.Request, res: express.Response) => {
-    const data: type.externalWallet = req.body;
+    const data: type.TransactionBody = req.body;
 
     const externalWallet = await WalletServices.createExternalWallet(data);
 
@@ -50,17 +47,10 @@ export const wallet = {
 };
 
 export const currency = {
-  createCurrency: async (req: express.Request, res: express.Response) => {
-    const data: type.currency = req.body;
-
-    const currency = await WalletServices.createCurrency(data);
-
-    res.json(currency);
-  },
   getCurrency: async (req: express.Request, res: express.Response) => {
-    const id: number = +req.params.id;
+    const { countryCode } = req.body as { countryCode: string };
 
-    const currency = await WalletServices.fetchCurrency(id);
+    const currency = await WalletServices.fetchCurrency(countryCode);
 
     res.json(currency);
   },
@@ -71,7 +61,7 @@ export const transaction = {
     req: express.Request,
     res: express.Response
   ) => {
-    const { n, walletId } = req.body;
+    const { n, walletId } = req.body as { n: number; walletId: number };
 
     const results = await TransactionService.fetchRecentTransactions(
       n,

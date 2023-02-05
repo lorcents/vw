@@ -1,4 +1,9 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import {
+  PendingTransaction,
+  Prisma,
+  PrismaClient,
+  Wallet,
+} from "@prisma/client";
 import to from "await-to-js";
 import * as type from "../interface";
 
@@ -29,7 +34,7 @@ export const getPendingTransaction = async (
  * @param  {number} updatedBalance
  */
 export const createTransaction = async (
-  pendingTransaction: type.pendingTransaction,
+  pendingTransaction: PendingTransaction,
   updatedBalance: number
 ): Promise<type.Transaction | string> => {
   let err, transaction;
@@ -39,6 +44,7 @@ export const createTransaction = async (
         transactionId: pendingTransaction.id,
         transactionType: pendingTransaction.transactionType,
         wallet: { connect: { id: pendingTransaction.walletId } },
+        service: pendingTransaction.service,
         amount: pendingTransaction.amount,
         cost: pendingTransaction.fee,
         comment: pendingTransaction.comment,
@@ -59,7 +65,7 @@ export const createTransaction = async (
 export const updateWalletBal = async (
   walletId: number,
   updatedBalance: number
-): Promise<type.wallet | string> => {
+): Promise<Wallet | string> => {
   let err, walletBalanceUpdate;
   [err, walletBalanceUpdate] = await to(
     prisma.wallet.update({
