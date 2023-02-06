@@ -17,8 +17,8 @@ export const wallet = {
   },
 
   createPin: async (req: express.Request, res: express.Response) => {
-    const data: { UserId: string; pin: string } = req.body;
-    const result = await WalletServices.createPin(data.UserId, data.pin);
+    const data: { userId: string; pin: string } = req.body;
+    const result = await WalletServices.createPin(data.userId, data.pin);
     res.json(result);
   },
 

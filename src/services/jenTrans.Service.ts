@@ -8,6 +8,7 @@ import * as type from "../interface";
 import { jen_url } from "../../config";
 import { pesaLinkCharges } from "../util/fee";
 import { checkBalance } from "../util/Balance";
+import { WalletServices } from "./wallet.Service";
 
 const prisma = new PrismaClient();
 
@@ -29,7 +30,7 @@ export abstract class JengaServices {
           fee: fee,
           comment: data.comment,
           appId: "12345",
-          service:data.service,
+          service: data.service,
           accNumber: data.serviceBody.accNo,
           status: "pending",
 
@@ -50,6 +51,15 @@ export abstract class JengaServices {
     pendingTransaction: type.pendingTransaction
   ): Promise<any> {
     let err, jenRequest;
+
+    const validatedPin = await WalletServices.comparePin(
+      data.walletId,
+      data.serviceBody.pin
+    );
+
+    if (!validatedPin.isPinCorrect) {
+      return validatedPin;
+    }
     const balance = await checkBalance(data.walletId);
 
     if (pendingTransaction.amount + pendingTransaction.fee > balance) {

@@ -110,8 +110,8 @@ export abstract class WalletServices {
         },
       });
       return result;
-    } catch (err) {
-      return "Error creating pin";
+    } catch (err: any) {
+      return err.message;
     }
   }
   static async checkPin(userId: string): Promise<any> {
@@ -135,9 +135,9 @@ export abstract class WalletServices {
   // define a counter to keep track of the incorrect attempts
   // let incorrectAttempts = 0;
 
-  static async comparePin(userId: string, pin: string) {
+  static async comparePin(walletId: number, pin: string) {
     const hashedPin = await prisma.wallet.findUnique({
-      where: { userId },
+      where: { id: walletId },
       select: {
         pin: true,
       },

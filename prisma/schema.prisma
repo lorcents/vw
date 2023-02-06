@@ -49,7 +49,7 @@ model Wallet {
   currency   Currency @relation(fields: [currencyId], references: [id])
   currencyId Int      
   balance    Int
-  pin        String?  @db.Char(4)
+  pin        String?  
   createdOn  DateTime @default(now())
   updatedOn  DateTime @default(now())
 
