@@ -25,11 +25,11 @@ export abstract class JengaServices {
     [err, pendingTransaction] = await to(
       prisma.pendingTransaction.create({
         data: {
-          transactionType: "debit",
+          transactionType: data.transactionType,
           amount: data.serviceBody.amount,
           fee: fee,
           comment: data.comment,
-          appId: "12345",
+          appId: "MALIPO",
           service: data.service,
           accNumber: data.serviceBody.accNo,
           status: "pending",

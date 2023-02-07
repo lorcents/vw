@@ -10,9 +10,11 @@ walletRouter.post("/checkPin", wallet.checkPin);
 
 walletRouter.post("/fetchWallet", wallet.getWallet);
 
+
 walletRouter.post(
   "/fetchRecenttransactions",
   transaction.fetchRecentTransactions
 );
+walletRouter.get("/fetchBanks", transaction.fetchBanks);
 
 export default walletRouter;

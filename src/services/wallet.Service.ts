@@ -160,7 +160,7 @@ export abstract class WalletServices {
         // return error message indicating that the account is blocked
         return {
           error:
-            "Your account has been blocked due to multiple incorrect attempts. Please conduct .",
+            "Your account has been blocked due to multiple incorrect attempts. Please contact Beren LLC .",
         };
       }
 
@@ -174,5 +174,21 @@ export abstract class WalletServices {
     // return a JSON web token if pin is correct
     // const token = jwt.sign({}, process.env.JWT_SECRET, { expiresIn: "1h" });
     return { isPinCorrect };
+  }
+  static async fetchBanks() {
+    const kenyaBanks = await prisma.kenyaBanks.findMany();
+    return kenyaBanks;
+  }
+
+  static async getSupportedCurrencies() {
+    const supportedCountries = ["KE", "US", "ET", "RW"];
+    const supportedCurrencies = await prisma.currency.findMany({
+      where: {
+        countryCode: {
+          in: supportedCountries,
+        },
+      },
+    });
+    return supportedCurrencies;
   }
 }

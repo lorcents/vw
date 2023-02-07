@@ -54,6 +54,13 @@ export const currency = {
 
     res.json(currency);
   },
+  getSupportedcurrencies: async (
+    req: express.Request,
+    res: express.Response
+  ) => {
+    const supportedCurrencies = await WalletServices.getSupportedCurrencies();
+    res.json(supportedCurrencies)
+  },
 };
 
 export const transaction = {
@@ -69,5 +76,9 @@ export const transaction = {
     );
 
     res.json(results);
+  },
+  fetchBanks: async (req: express.Request, res: express.Response) => {
+    const kenyaBanks = await WalletServices.fetchBanks();
+    res.json(kenyaBanks);
   },
 };

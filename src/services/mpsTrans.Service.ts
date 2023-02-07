@@ -14,13 +14,13 @@ export abstract class MpsService {
     [err, pendingTransaction] = await to(
       prisma.pendingTransaction.create({
         data: {
-          transactionType: "credit",
+          transactionType: data.transactionType,
           amount: data.serviceBody.amount,
           fee: data.serviceBody.fee,
           comment: data.comment,
-          service:data.service,
+          service: data.service,
           accNumber: data.serviceBody.phoneNo,
-          appId: "12345",
+          appId: "MALIPO",
           status: "pending",
 
           wallet: { connect: { id: data.walletId } },
