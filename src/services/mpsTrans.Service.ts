@@ -29,7 +29,7 @@ export abstract class MpsService {
     );
 
     if (err || pendingTransaction === undefined) {
-      return "Could not process transaction,try again ";
+      throw new Error(err?.message);
     }
 
     return pendingTransaction;
@@ -45,8 +45,7 @@ export abstract class MpsService {
     );
 
     if (err || stkRequest === undefined) {
-      console.log(err?.message);
-      return "Failed to send stk request";
+      throw new Error (err?.message);
     }
 
     return stkRequest.data;

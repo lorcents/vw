@@ -27,12 +27,12 @@ export abstract class TransactionService {
     const pendingTransaction = await getPendingTransaction(transId);
     if (typeof pendingTransaction === "string") {
       release();
-      return pendingTransaction;
+      throw new Error ("Error here");
     }
 
     if (pendingTransaction.status !== "success") {
       release();
-      return `Transaction status is still ${pendingTransaction.status}`;
+      throw new Error( `Transaction status is still ${pendingTransaction.status}`);
     }
 
     //Updated wallet and fee Balance
@@ -64,7 +64,7 @@ export abstract class TransactionService {
       typeof updateFeebalWallet === "string"
     ) {
       release();
-      return "Error  updating balances";
+      throw Error( "Error  updating balances");
     }
 
     //const Delete Transaction
@@ -98,7 +98,7 @@ export abstract class TransactionService {
 
       return result;
     } catch (err: any) {
-      return err.message;
+      throw new Error(`Failed to fetch recent transactions:${ err.message}`);
     }
   }
 }

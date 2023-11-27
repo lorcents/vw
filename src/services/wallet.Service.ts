@@ -11,7 +11,16 @@ export abstract class WalletServices {
    * @param  {type.wallet} data
    */
   static async createWallet(data: type.wallet): Promise<any> {
+    if(!data) throw new Error("Please provide valid data");
     try {
+
+      const existingWallet = await prisma.wallet.findUnique({
+        where: { userId: data.userId },
+      });
+  
+      if (existingWallet) {
+        throw new Error(`Wallet already exists for userID: ${data.userId}`);
+      }
       const result = await prisma.wallet.create({
         data: {
           userId: data.userId,
@@ -21,7 +30,7 @@ export abstract class WalletServices {
       });
       return result;
     } catch (err: any) {
-      return err.message;
+      throw new Error( `Failed to create wallet : ${err.message}`);
     }
   }
   /**
@@ -46,7 +55,7 @@ export abstract class WalletServices {
       });
       return result;
     } catch (err: any) {
-      return err.message;
+      throw new Error (err.message);
     }
   }
   /**
@@ -77,7 +86,7 @@ export abstract class WalletServices {
 
       return result;
     } catch (err: any) {
-      return err.message;
+      throw new Error (err.message);
     }
   }
 
@@ -95,7 +104,7 @@ export abstract class WalletServices {
 
       return result;
     } catch (err) {
-      return `No currency found with country code ${countryCode}`;
+      throw new Error (`No currency found with country code ${countryCode}`);
     }
   }
   static async createPin(userId: string, pin: string): Promise<any> {
@@ -111,7 +120,7 @@ export abstract class WalletServices {
       });
       return result;
     } catch (err: any) {
-      return err.message;
+      throw new Error (err.message);
     }
   }
   static async checkPin(userId: string): Promise<any> {
@@ -128,7 +137,7 @@ export abstract class WalletServices {
         return 0; // //There  is NO  a pin associated with the wallet
       }
     } catch (err: any) {
-      return err.message;
+      throw new Error( err.message);
     }
   }
 
@@ -144,9 +153,7 @@ export abstract class WalletServices {
     });
 
     if (!hashedPin?.pin) {
-      return {
-        error: "Your wallet pin could not be found.",
-      };
+      throw new Error ("Your wallet pin could not be found.")
     }
 
     const isPinCorrect = await bcrypt.compare(pin, hashedPin.pin);
@@ -158,14 +165,13 @@ export abstract class WalletServices {
       // check if the number of incorrect attempts is equal to 3
       if (this.incorrectAttempts === 3) {
         // return error message indicating that the account is blocked
-        return {
-          error:
-            "Your account has been blocked due to multiple incorrect attempts. Please contact Beren LLC .",
-        };
+        throw new Error (
+            "Your account has been blocked due to multiple incorrect attempts. Please contact  support .",
+        );
       }
 
       // return error message indicating that the pin is incorrect
-      return { error: "Incorrect pin. Please try again." };
+      throw new Error ("Incorrect pin. Please try again." );
     }
 
     // reset the incorrectAttempts counter if pin is correct

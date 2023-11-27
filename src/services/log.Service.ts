@@ -19,7 +19,7 @@ export abstract class LogServices {
       })
     );
     if (err || log === undefined) {
-      return "could not create the Log";
+      throw new Error(err?.message || "could not create the Log");
     }
 
     return log;
@@ -41,7 +41,7 @@ export abstract class LogServices {
     );
 
     if (err || statusUpdate === undefined) {
-      return "Failed to update status";
+      throw new Error(err?.message || "Failed to update status");
     }
     console.log(statusUpdate);
 
@@ -59,7 +59,7 @@ export abstract class LogServices {
     );
 
     if (err || deleteTransaction === undefined) {
-      return `Failed to delete transaction with id : ${id}`;
+      throw new Error( err?.message  || `Failed to delete transaction with id : ${id}`);
     }
 
     return deleteTransaction;

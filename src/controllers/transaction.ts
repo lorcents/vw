@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
+import { Request, Response ,NextFunction} from "express";
 import { TransactionBody } from "../interface";
 
-export const transaction = async (req: Request, res: Response) => {
+export const transaction = async (req: Request, res: Response,next:NextFunction) => {
   const body: TransactionBody = req.body;
 
   console.log(body);

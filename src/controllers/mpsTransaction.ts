@@ -14,16 +14,17 @@ import { LogServices } from "../services/log.Service";
 const mutex = new Mutex();
 
 export const mpsTransaction = {
-  initiateTransaction: async (req: express.Request, res: express.Response) => {
+  initiateTransaction: async (req: express.Request, res: express.Response,next:express.NextFunction) => {
     const data: type.TransactionBody = req.body;
-    console.log(data);
 
     //initiate transaction
+    try {
     const pendingTransaction = await MpsService.initiateTransaction(data);
     const jsonObject = stringify(pendingTransaction);
+    console.log(pendingTransaction);
 
     const stkData = {
-      phoneNumber: pendingTransaction.phoneNumber,
+      phoneNumber: pendingTransaction.accNumber,
       amount: pendingTransaction.amount + pendingTransaction.fee,
     };
 
@@ -42,7 +43,7 @@ export const mpsTransaction = {
 
     let status: string;
 
-    if (stkRequest.response.ResponseCode === "0") {
+    if (stkRequest.ResponseCode === "0") {
       status = "success";
     } else {
       status = "failed";
@@ -63,6 +64,7 @@ export const mpsTransaction = {
       status: status,
     });
 
+
     //simulation code
     let x;
     if (statusUpdate.status === "success") {
@@ -73,10 +75,14 @@ export const mpsTransaction = {
         statusUpdate.id
       );
     }
+    console.log("+++++++++++++++++++++", x);
 
     let tranRes = pendingTransaction;
-    let stkRes = stkRequest.response;
+    let stkRes = stkRequest;
     let transaction = x;
     res.json({ tranRes, stkRes, transaction });
+  }catch(error){
+    next(error)
+  }
   },
 };

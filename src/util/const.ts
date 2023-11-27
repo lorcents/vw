@@ -1,1 +1,1 @@
-export const SYSTEMWALLETID: number = 7;
+export const SYSTEMWALLETID: number = 1;

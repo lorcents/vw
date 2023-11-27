@@ -8,77 +8,125 @@ import { TransactionService } from "../services/transaction.Service";
 const prisma = new PrismaClient();
 
 export const wallet = {
-  createWallet: async (req: express.Request, res: express.Response) => {
+  createWallet: async (req: express.Request, res: express.Response, next :express.NextFunction) => {
     const data: type.wallet = req.body;
+    try {
+      const wallet = await WalletServices.createWallet(data);
+      res.status(200).json(wallet);
+    }
+    catch(error){
+      next(error)
+    }
+   
 
-    const wallet = await WalletServices.createWallet(data);
-
-    res.status(200).json(wallet);
+  
   },
 
-  createPin: async (req: express.Request, res: express.Response) => {
+  createPin: async (req: express.Request, res: express.Response, next :express.NextFunction) => {
     const data: { userId: string; pin: string } = req.body;
-    const result = await WalletServices.createPin(data.userId, data.pin);
-    res.json(result);
+    try {
+      const result = await WalletServices.createPin(data.userId, data.pin);
+      res.json(result);
+    }catch(error){
+      next(error)
+    }
+    
   },
 
-  checkPin: async (req: express.Request, res: express.Response) => {
+  checkPin: async (req: express.Request, res: express.Response, next : express.NextFunction) => {
     const data: { userId: string } = req.body;
-    const result = await WalletServices.checkPin(data.userId);
+    try{
+      const result = await WalletServices.checkPin(data.userId);
 
-    res.json(result);
+      res.json(result);
+    }catch(error){
+      next(error)
+    }
+    
   },
 
-  getWallet: async (req: express.Request, res: express.Response) => {
+  getWallet: async (req: express.Request, res: express.Response,next:express.NextFunction) => {
     const userId: string = req.body.userId;
+    try{
+      const wallet = await WalletServices.fetchWallet(userId);
 
-    const wallet = await WalletServices.fetchWallet(userId);
-
-    res.json(wallet);
+      res.json(wallet);
+    }catch(error){
+      next(error)
+    }
+    
   },
 
-  createExternalWallet: async (req: express.Request, res: express.Response) => {
+  createExternalWallet: async (req: express.Request, res: express.Response, next :express.NextFunction) => {
     const data: type.TransactionBody = req.body;
-
+   try{
     const externalWallet = await WalletServices.createExternalWallet(data);
-
     res.json(externalWallet);
+   }catch(error){
+    next(error)
+   }
+   
+
+    
   },
 };
 
 export const currency = {
-  getCurrency: async (req: express.Request, res: express.Response) => {
+  getCurrency: async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const { countryCode } = req.body as { countryCode: string };
 
-    const currency = await WalletServices.fetchCurrency(countryCode);
+    try {
+      const currency = await WalletServices.fetchCurrency(countryCode);
 
-    res.json(currency);
+      res.json(currency);
+    }catch(error){
+      next(error)
+    }
+
+   
   },
   getSupportedcurrencies: async (
     req: express.Request,
-    res: express.Response
+    res: express.Response,
+    next:express.NextFunction
   ) => {
-    const supportedCurrencies = await WalletServices.getSupportedCurrencies();
-    res.json(supportedCurrencies)
+    try{
+      const supportedCurrencies = await WalletServices.getSupportedCurrencies();
+      res.json(supportedCurrencies)
+    }catch(error){
+      next(error)
+    }
+    
   },
 };
 
 export const transaction = {
   fetchRecentTransactions: async (
     req: express.Request,
-    res: express.Response
+    res: express.Response,
+    next:express.NextFunction
   ) => {
     const { n, walletId } = req.body as { n: number; walletId: number };
 
-    const results = await TransactionService.fetchRecentTransactions(
-      n,
-      walletId
-    );
-
-    res.json(results);
+    try{
+      const results = await TransactionService.fetchRecentTransactions(
+        n,
+        walletId
+      );
+  
+      res.json(results);
+    }catch(error){
+      next(error)
+    }
+    
   },
-  fetchBanks: async (req: express.Request, res: express.Response) => {
-    const kenyaBanks = await WalletServices.fetchBanks();
-    res.json(kenyaBanks);
+  fetchBanks: async (req: express.Request, res: express.Response, next:express.NextFunction) => {
+    try{
+      const kenyaBanks = await WalletServices.fetchBanks();
+      res.json(kenyaBanks);
+    }catch(error){
+      next(error)
+    }
+  
   },
 };

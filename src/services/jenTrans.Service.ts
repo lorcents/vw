@@ -40,7 +40,7 @@ export abstract class JengaServices {
     );
 
     if (err || pendingTransaction === undefined) {
-      return "Could not process transaction";
+      throw new Error( err?.message   || "Could not process transaction");
     }
 
     return pendingTransaction;
@@ -70,7 +70,7 @@ export abstract class JengaServices {
      */
     [err, jenRequest] = await to(axios.post(jen_url, data));
     if (err || jenRequest === undefined) {
-      return "Failed to send jengaRequest";
+      throw new Error(err?.message   || "Failed to send jengaRequest");
     }
 
     return jenRequest.data;

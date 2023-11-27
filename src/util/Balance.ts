@@ -15,8 +15,10 @@ export const checkBalance = async (walletId: number): Promise<number> => {
     },
   });
 
-  if (balance == undefined || balance == null) {
-    throw Error();
+  console.log(balance);
+
+  if (balance?.balance == undefined || balance.balance == null) {
+    throw Error("Balance is undefined or null");
   }
 
   let walletBalance = balance!.balance;
