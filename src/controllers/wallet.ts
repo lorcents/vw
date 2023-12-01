@@ -17,8 +17,18 @@ export const wallet = {
     catch(error){
       next(error)
     }
-   
+  
+  },
 
+  createUser :async (req: express.Request, res: express.Response, next :express.NextFunction) => {
+    const data: type.user = req.body;
+    try {
+      const wallet = await WalletServices.createUser(data);
+      res.status(200).json(wallet);
+    }
+    catch(error){
+      next(error)
+    }
   
   },
 

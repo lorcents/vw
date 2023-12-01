@@ -47,10 +47,17 @@ export interface jenTransactionBody {
 }
 
 export interface wallet {
-  userId: string;
+  phoneNumber: string;
   countryCode: string;
 }
 
+
+export interface user {
+  firstName:string,
+  secondName:string,
+  phoneNumber:string,
+  email:string
+}
 export interface externalWallet {
   fullName: string;
   bankName: string;

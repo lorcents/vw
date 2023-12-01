@@ -5,6 +5,7 @@ import { wallet, transaction } from "../controllers/wallet";
 const walletRouter = express.Router();
 
 walletRouter.post("/wallet", wallet.createWallet);
+walletRouter.post("/user", wallet.createUser)
 walletRouter.post("/createPin", wallet.createPin);
 walletRouter.get("/checkPin", wallet.checkPin);
 

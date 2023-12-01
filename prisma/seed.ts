@@ -50,21 +50,40 @@ async function initialize() {
     throw new Error(`Currency with country code KE not found`);
   }
 
-  await prisma.wallet.createMany({
-    data: [
+ await prisma.user.createMany({
+  data:[
+    {
+      firstName:"System",
+      secondName:"Wallet",
+      phoneNumber:"+254712345678",
+      status:true
+    },
+    {
+      firstName:"Jenga",
+      secondName:"Copy",
+      phoneNumber:"+254700000000",
+      status:true
+    }
+  ]
+})
+
+const users = await prisma.user.findMany({})
+const userIds = users.map(user=>user.id)
+
+for (const userId of userIds){
+  await prisma.wallet.create({
+    data: 
       {
-        userId: "System Wallet",
         balance: 0,
         currencyId: currency.id,
-      },
-      {
-        userId: "Jenga Copy",
-        balance: 0,
-        currencyId: currency.id,
-      },
-    ],
+        userId
+      }
+
   });
 }
+}
+
+  
 async function loadBanks() {
   for (const { bankName, bankCode, countryCode } of banks) {
     const kenyaBank = await prisma.kenyaBanks.create({

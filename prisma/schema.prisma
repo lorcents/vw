@@ -31,6 +31,19 @@ enum ServiceId {
   mbwt //send money jenga mobile wallet across East africa 
 }
 
+
+model User {
+  id   String @unique @id @default(uuid()) @db.VarChar(15)
+  phoneNumber String @unique @db.VarChar(15)
+  email      String? @unique  @db.VarChar(320)
+  firstName String?
+  secondName String?
+  otpHash    String? 
+  status     Boolean
+  createdAt DateTime  @default(now())
+  updatedAt  DateTime @default(now())
+  wallet Wallet?
+}
 model Currency {
   id             Int        @unique      @id @default(autoincrement())
   Wallet         Wallet[]
@@ -45,6 +58,7 @@ model Currency {
 
 model Wallet {
   id         Int      @id @default(autoincrement())
+  user      User @relation(fields:[userId],references: [id])
   userId     String   @unique
   currency   Currency @relation(fields: [currencyId], references: [id])
   currencyId Int      

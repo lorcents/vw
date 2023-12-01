@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { ExternalWallet, Prisma, PrismaClient, User, Wallet } from "@prisma/client";
 import * as type from "../interface";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -10,22 +10,51 @@ export abstract class WalletServices {
   /**
    * @param  {type.wallet} data
    */
-  static async createWallet(data: type.wallet): Promise<any> {
+  static async createWallet(data: type.wallet): Promise<Wallet> {
     if(!data) throw new Error("Please provide valid data");
     try {
 
+      const user = await prisma.user.findUnique({where :{phoneNumber : data.phoneNumber}})
+      if(!user) throw new Error(`No user exist with that phone Number`)
+
       const existingWallet = await prisma.wallet.findUnique({
-        where: { userId: data.userId },
+        where: { userId: user.id },
       });
   
       if (existingWallet) {
-        throw new Error(`Wallet already exists for userID: ${data.userId}`);
+        throw new Error(`Wallet already exists for phoneNumber: ${data.phoneNumber}`);
       }
       const result = await prisma.wallet.create({
         data: {
-          userId: data.userId,
           currency: { connect: { countryCode: data.countryCode } },
+          user: { connect : {  id:user.id  }},
           balance: 0,
+        },
+      });
+      return result;
+    } catch (err: any) {
+      throw new Error( `Failed to create wallet : ${err.message}`);
+    }
+  }
+
+  static async createUser(data: type.user): Promise<User> {
+    if(!data) throw new Error("Please provide valid data");
+    try {
+
+      const existingUser = await prisma.user.findUnique({
+        where: { phoneNumber: data.phoneNumber },
+      });
+  
+      if (existingUser) {
+        throw new Error(`Wallet already exists for phone Number: ${data.phoneNumber}`);
+      }
+      const result = await prisma.user.create({
+        data: {
+          firstName: data.firstName,
+          secondName:data.phoneNumber,
+          email : data.email,
+          status: true,
+          phoneNumber:data.phoneNumber
         },
       });
       return result;
@@ -61,7 +90,7 @@ export abstract class WalletServices {
   /**
    * @param  {type.externalWallet} data
    */
-  static async createExternalWallet(data: type.TransactionBody): Promise<any> {
+  static async createExternalWallet(data: type.TransactionBody): Promise<ExternalWallet> {
     try {
       const currency = await prisma.currency.findUnique({
         where: { countryCode: data.serviceBody.countryCode },
