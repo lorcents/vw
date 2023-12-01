@@ -36,10 +36,10 @@ export abstract class WalletServices {
   /**
    * @param  {number} id
    */
-  static async fetchWallet(userId: string): Promise<any> {
+  static async fetchWallet(userId: string,): Promise<any> {
     try {
       const result = await prisma.wallet.findUnique({
-        where: { userId: userId },
+        where: { userId: userId  } ,
         select: {
           id: true,
           userId: true,
@@ -132,9 +132,11 @@ export abstract class WalletServices {
         },
       });
       if (result?.pin) {
-        return 1; //There is a pin associated with the wallet
+        return { satus : 1,
+        message :`There is a pin associated with the wallet`}; //
       } else {
-        return 0; // //There  is NO  a pin associated with the wallet
+        return { satus : 0,
+          message :`There is No  pin associated with the wallet`};
       }
     } catch (err: any) {
       throw new Error( err.message);

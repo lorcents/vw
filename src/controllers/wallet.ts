@@ -34,9 +34,9 @@ export const wallet = {
   },
 
   checkPin: async (req: express.Request, res: express.Response, next : express.NextFunction) => {
-    const data: { userId: string } = req.body;
+    const userId: string  = req.query.userId as string;
     try{
-      const result = await WalletServices.checkPin(data.userId);
+      const result = await WalletServices.checkPin(userId);
 
       res.json(result);
     }catch(error){
@@ -46,7 +46,7 @@ export const wallet = {
   },
 
   getWallet: async (req: express.Request, res: express.Response,next:express.NextFunction) => {
-    const userId: string = req.body.userId;
+    const userId = req.query.userId as string;
     try{
       const wallet = await WalletServices.fetchWallet(userId);
 
@@ -73,7 +73,7 @@ export const wallet = {
 
 export const currency = {
   getCurrency: async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    const { countryCode } = req.body as { countryCode: string };
+    const countryCode  = req.query.countryCode as  string ;
 
     try {
       const currency = await WalletServices.fetchCurrency(countryCode);
@@ -106,7 +106,8 @@ export const transaction = {
     res: express.Response,
     next:express.NextFunction
   ) => {
-    const { n, walletId } = req.body as { n: number; walletId: number };
+    const walletId: number = parseInt(req.query.walletId as string, 10);
+    const n: number = parseInt(req.query.n as string, 10);
 
     try{
       const results = await TransactionService.fetchRecentTransactions(

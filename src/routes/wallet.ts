@@ -6,12 +6,12 @@ const walletRouter = express.Router();
 
 walletRouter.post("/wallet", wallet.createWallet);
 walletRouter.post("/createPin", wallet.createPin);
-walletRouter.post("/checkPin", wallet.checkPin);
+walletRouter.get("/checkPin", wallet.checkPin);
 
-walletRouter.post("/fetchWallet", wallet.getWallet);
+walletRouter.get("/fetchWallet", wallet.getWallet);
 
 
-walletRouter.post(
+walletRouter.get(
   "/fetchRecenttransactions",
   transaction.fetchRecentTransactions
 );
