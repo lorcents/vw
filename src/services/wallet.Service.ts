@@ -1,7 +1,6 @@
-import { ExternalWallet, Prisma, PrismaClient, User, Wallet } from "@prisma/client";
+import { ExternalWallet, PrismaClient, Wallet } from "@prisma/client";
 import * as type from "../interface";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
@@ -24,9 +23,13 @@ export abstract class WalletServices {
       if (existingWallet) {
         throw new Error(`Wallet already exists for phoneNumber: ${data.phoneNumber}`);
       }
+
+      const supportedCurrency = await prisma.currency.findFirst({where:{countryCode : data.countryCode.toUpperCase()}});
+      if(!supportedCurrency)throw new Error ('Please provide a valid country code');
+      if(!supportedCurrency?.supported) throw new Error (`${supportedCurrency?.currencyName} is yet to be supported`);
       const result = await prisma.wallet.create({
         data: {
-          currency: { connect: { countryCode: data.countryCode } },
+          currency: { connect: { countryCode: data.countryCode.toUpperCase() } },
           user: { connect : {  id:user.id  }},
           balance: 0,
         },
@@ -37,38 +40,15 @@ export abstract class WalletServices {
     }
   }
 
-  static async createUser(data: type.user): Promise<User> {
-    if(!data) throw new Error("Please provide valid data");
-    try {
-
-      const existingUser = await prisma.user.findUnique({
-        where: { phoneNumber: data.phoneNumber },
-      });
-  
-      if (existingUser) {
-        throw new Error(`Wallet already exists for phone Number: ${data.phoneNumber}`);
-      }
-      const result = await prisma.user.create({
-        data: {
-          firstName: data.firstName,
-          secondName:data.phoneNumber,
-          email : data.email,
-          status: true,
-          phoneNumber:data.phoneNumber
-        },
-      });
-      return result;
-    } catch (err: any) {
-      throw new Error( `Failed to create wallet : ${err.message}`);
-    }
-  }
   /**
-   * @param  {number} id
+   * @param  {string} phoneNumber
    */
-  static async fetchWallet(userId: string,): Promise<any> {
+  static async fetchWallet(phoneNumber: string): Promise<any> {
+    const user = await prisma.user.findUnique({where:{phoneNumber:phoneNumber}});
+    if(!user) throw new Error (`No user with this phone number ${phoneNumber}`)
     try {
       const result = await prisma.wallet.findUnique({
-        where: { userId: userId  } ,
+        where: { userId: user.id  } ,
         select: {
           id: true,
           userId: true,
@@ -127,7 +107,7 @@ export abstract class WalletServices {
     try {
       const result = await prisma.currency.findUnique({
         where: {
-          countryCode: countryCode,
+          countryCode: countryCode.toUpperCase(),
         },
       });
 
@@ -152,10 +132,12 @@ export abstract class WalletServices {
       throw new Error (err.message);
     }
   }
-  static async checkPin(userId: string): Promise<any> {
+  static async checkPin(phoneNumber: string): Promise<any> {
+    const user = await prisma.user.findUnique({where:{phoneNumber:phoneNumber}});
+    if(!user) throw new Error (`No user with this phone number ${phoneNumber}`)
     try {
       const result = await prisma.wallet.findUnique({
-        where: { userId },
+        where: { userId:user.id },
         select: {
           pin: true,
         },
@@ -218,12 +200,9 @@ export abstract class WalletServices {
   }
 
   static async getSupportedCurrencies() {
-    const supportedCountries = ["KE", "US", "ET", "RW"];
     const supportedCurrencies = await prisma.currency.findMany({
       where: {
-        countryCode: {
-          in: supportedCountries,
-        },
+        supported: true
       },
     });
     return supportedCurrencies;

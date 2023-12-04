@@ -33,12 +33,14 @@ enum ServiceId {
 
 
 model User {
-  id   String @unique @id @default(uuid()) @db.VarChar(15)
+  id   String @unique @id @default(uuid())
   phoneNumber String @unique @db.VarChar(15)
   email      String? @unique  @db.VarChar(320)
   firstName String?
   secondName String?
   otpHash    String? 
+  otpExpiresAt DateTime?
+  inCorrectAttempts Int?
   status     Boolean
   createdAt DateTime  @default(now())
   updatedAt  DateTime @default(now())
@@ -48,7 +50,7 @@ model Currency {
   id             Int        @unique      @id @default(autoincrement())
   Wallet         Wallet[]
   externalWallet ExternalWallet[]
-
+  supported    Boolean @default(false)
   currencyName    String @db.VarChar(255)
   currencyCode    String
   countryCode     String @unique @db.Char(2)

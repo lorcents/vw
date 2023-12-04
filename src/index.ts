@@ -7,6 +7,7 @@ import cors from "cors";
 import walletRouter from "./routes/wallet";
 import currencyRouter from "./routes/currency";
 import transactionRouter from "./routes/transaction";
+import userRouter from "./routes/user";
 
 import { requestLogger, errorLogger, errorResponder, invalidPathHandler } from './middleware'
 
@@ -17,9 +18,10 @@ app.use(express.json());
 
 app.use(requestLogger);
 
-app.get("/", (res, req) => {});
-app.use("/", currencyRouter);
-app.use("/", walletRouter);
+app.get("/", (req,res) => { res.json("Hello there")});
+app.use("/user",userRouter)
+app.use("/currency", currencyRouter);
+app.use("/wallet", walletRouter);
 app.use("/", transactionRouter);
 
 app.use(errorLogger)

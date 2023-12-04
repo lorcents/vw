@@ -20,17 +20,6 @@ export const wallet = {
   
   },
 
-  createUser :async (req: express.Request, res: express.Response, next :express.NextFunction) => {
-    const data: type.user = req.body;
-    try {
-      const wallet = await WalletServices.createUser(data);
-      res.status(200).json(wallet);
-    }
-    catch(error){
-      next(error)
-    }
-  
-  },
 
   createPin: async (req: express.Request, res: express.Response, next :express.NextFunction) => {
     const data: { userId: string; pin: string } = req.body;
@@ -44,9 +33,9 @@ export const wallet = {
   },
 
   checkPin: async (req: express.Request, res: express.Response, next : express.NextFunction) => {
-    const userId: string  = req.query.userId as string;
+    const phoneNumber: string  = req.params['phoneNumber'] as string;
     try{
-      const result = await WalletServices.checkPin(userId);
+      const result = await WalletServices.checkPin(phoneNumber);
 
       res.json(result);
     }catch(error){
@@ -56,9 +45,9 @@ export const wallet = {
   },
 
   getWallet: async (req: express.Request, res: express.Response,next:express.NextFunction) => {
-    const userId = req.query.userId as string;
+    const phoneNumber = req.params['phoneNumber'] as string;
     try{
-      const wallet = await WalletServices.fetchWallet(userId);
+      const wallet = await WalletServices.fetchWallet(phoneNumber);
 
       res.json(wallet);
     }catch(error){
