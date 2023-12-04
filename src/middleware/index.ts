@@ -1,5 +1,7 @@
 
 import { type Request, type Response, type NextFunction } from 'express'
+import jwt from "jsonwebtoken";
+import { JwtSecret } from '../../config';
 
 // Error object used in error handling middleware function
 export class AppError extends Error {
@@ -71,4 +73,25 @@ export const invalidPathHandler = (
       message: 'Invalid path'
     }
   })
+}
+
+
+// Middleware to protect routes using JWT
+export const authenticateToken= (req :Request, res :Response, next : NextFunction)=> {
+  const token = req.headers['authorization']!.split(' ')[1];
+  if (!token) {
+  throw new AppError (401 ,'Token is required');
+
+  }
+  console.log(token)
+
+  jwt.verify(token.trim(), JwtSecret!, (err, decodeToken) => {
+  
+    if (err) {
+      console.log(err)
+      throw new AppError (401 ,err.message);
+    }
+    // req.user = decodeToken;
+    next();
+  });
 }

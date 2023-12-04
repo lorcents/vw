@@ -40,7 +40,7 @@ model User {
   secondName String?
   otpHash    String? 
   otpExpiresAt DateTime?
-  inCorrectAttempts Int?
+  inCorrectAttempts Int @default(0)
   status     Boolean
   createdAt DateTime  @default(now())
   updatedAt  DateTime @default(now())

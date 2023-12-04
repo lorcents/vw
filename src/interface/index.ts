@@ -118,3 +118,9 @@ export interface Transaction {
   valueTime: Date;
   service: Service;
 }
+
+
+export interface otpData {
+  phoneNumber :string,
+  otp :string
+}
