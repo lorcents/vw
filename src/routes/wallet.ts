@@ -13,9 +13,9 @@ walletRouter.get("/fetchWallet/:phoneNumber",authenticateToken,  wallet.getWalle
 
 
 walletRouter.get(
-  "/fetchRecenttransactions",
+  "/fetchRecenttransactions",authenticateToken,
   transaction.fetchRecentTransactions
 );
-walletRouter.get("/fetchBanks", authenticateToken, transaction.fetchBanks);
+walletRouter.get("/fetchBanks", transaction.fetchBanks);
 
 export default walletRouter;

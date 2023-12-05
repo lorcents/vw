@@ -1,6 +1,6 @@
 
 import { type Request, type Response, type NextFunction } from 'express'
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import { JwtSecret } from '../../config';
 
 // Error object used in error handling middleware function
@@ -83,14 +83,14 @@ export const authenticateToken= (req :Request, res :Response, next : NextFunctio
   throw new AppError (401 ,'Token is required');
 
   }
-  console.log(token)
 
-  jwt.verify(token.trim(), JwtSecret!, (err, decodeToken) => {
+  jwt.verify(token.trim(), JwtSecret!, (err, decodeToken :any) => {
   
     if (err) {
       console.log(err)
       throw new AppError (401 ,err.message);
     }
+    if(decodeToken ==undefined || decodeToken == null) throw new AppError(401,"Problem decoding token")
     // req.user = decodeToken;
     next();
   });

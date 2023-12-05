@@ -82,7 +82,7 @@ export abstract class UserServices {
           firstName : existingUser.firstName,
           time: new Date()
         }
-    const token = jwt.sign( jwtData , JwtSecret!, { expiresIn: '1h' });
+    const token = jwt.sign( jwtData , JwtSecret!, { expiresIn: '24h' });
 
     // You can include additional data in the token payload if needed
     return({ token });

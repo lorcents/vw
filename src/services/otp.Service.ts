@@ -51,6 +51,6 @@ const phoneNumberWithoutPlus = phoneNumber.slice(1)
 
 
 }catch(err:any){
-    throw new Error('Failed sending OTP to whatsapp')
+    throw new Error(`Failed to send otp , ${err.message}`)
 }
 };
