@@ -91,7 +91,7 @@ export const authenticateToken= (req :Request, res :Response, next : NextFunctio
       throw new AppError (401 ,err.message);
     }
     if(decodeToken ==undefined || decodeToken == null) throw new AppError(401,"Problem decoding token")
-    // req.user = decodeToken;
+    req.user = decodeToken;
     next();
   });
 }

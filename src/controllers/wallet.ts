@@ -4,6 +4,7 @@ import express from "express";
 import * as type from "../interface";
 import { WalletServices } from "../services/wallet.Service";
 import { TransactionService } from "../services/transaction.Service";
+import { AppError } from "../middleware";
 
 const prisma = new PrismaClient();
 
@@ -22,9 +23,10 @@ export const wallet = {
 
 
   createPin: async (req: express.Request, res: express.Response, next :express.NextFunction) => {
-    const data: { userId: string; pin: string } = req.body;
+    const data: { phoneNumber: string; pin: string } = req.body;
     try {
-      const result = await WalletServices.createPin(data.userId, data.pin);
+      if(data.phoneNumber !== req.user.phoneNumber) throw new AppError(401,"UNAUTHORIZED ACCESS ,You should'nt be here")
+      const result = await WalletServices.createPin(data.phoneNumber, data.pin);
       res.json(result);
     }catch(error){
       next(error)
@@ -35,6 +37,7 @@ export const wallet = {
   checkPin: async (req: express.Request, res: express.Response, next : express.NextFunction) => {
     const phoneNumber: string  = req.params['phoneNumber'] as string;
     try{
+      if(phoneNumber !== req.user.phoneNumber) throw new AppError(401,"UNAUTHORIZED ACCESS ,You should'nt be here")
       const result = await WalletServices.checkPin(phoneNumber);
 
       res.json(result);
@@ -47,6 +50,7 @@ export const wallet = {
   getWallet: async (req: express.Request, res: express.Response,next:express.NextFunction) => {
     const phoneNumber = req.params['phoneNumber'] as string;
     try{
+      if(phoneNumber !== req.user.phoneNumber) throw new AppError(401,"UNAUTHORIZED ACCESS ,You should'nt be here")
       const wallet = await WalletServices.fetchWallet(phoneNumber);
 
       res.json(wallet);

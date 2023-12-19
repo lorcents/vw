@@ -116,18 +116,20 @@ export abstract class WalletServices {
       throw new Error (`No currency found with country code ${countryCode}`);
     }
   }
-  static async createPin(userId: string, pin: string): Promise<any> {
+  static async createPin(phoneNumber: string, pin: string): Promise<any> {
+    const user = await prisma.user.findUnique({where:{phoneNumber:phoneNumber}});
+    if(!user) throw new Error (`No user with this phone number ${phoneNumber}`)
     const hash = await bcrypt.hash(pin, 10);
     try {
       const result = await prisma.wallet.update({
         where: {
-          userId: userId,
+          userId: user.id,
         },
         data: {
           pin: hash,
         },
       });
-      return result;
+      return {status :0 , message :"Congratulation , Pin created succefully"};
     } catch (err: any) {
       throw new Error (err.message);
     }
